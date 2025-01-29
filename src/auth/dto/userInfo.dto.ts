@@ -9,7 +9,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class SignUpCredentialsDto {
+export class userInfoDto {
   @IsString()
   @MinLength(4)
   @MaxLength(10)

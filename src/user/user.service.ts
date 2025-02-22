@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { userInfoDto } from 'src/auth/dto/userInfo.dto';
 import { User } from 'src/auth/user.entity';
@@ -16,5 +16,15 @@ export class UserService {
 
   save(userInfoDto: userInfoDto) {
     return this.userRepository.save(userInfoDto);
+  }
+
+  getUser(id: string) {
+    const user = this.findOne([{ id }]);
+
+    if (!user) {
+      throw new BadRequestException();
+    }
+
+    return user;
   }
 }

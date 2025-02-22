@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { userInfoDto } from './dto/userInfo.dto';
-import { SignInCredentialsDto } from './dto/signInCredentials.dto copy';
+import { SignInCredentialsDto } from './dto/signInCredentials.dto';
 import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 
@@ -42,6 +42,8 @@ export class AuthService {
       throw new UnauthorizedException('Wrong password.');
     }
 
-    return { access_token: await this.jwtService.signAsync({ username }) };
+    return {
+      access_token: await this.jwtService.signAsync({ sub: user.id, username }),
+    };
   }
 }

@@ -13,4 +13,10 @@ export class UserController {
   getUser(@GetJwtPayload() jwtPayload: JwtPayload) {
     return this.userService.getUser(jwtPayload.sub);
   }
+
+  @UseGuards(AuthGuard)
+  @Get()
+  getUsers() {
+    return this.userService.getUsers();
+  }
 }

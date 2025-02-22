@@ -27,4 +27,8 @@ export class UserService {
 
     return user;
   }
+
+  getUsers() {
+    return this.userRepository.find();
+  }
 }

@@ -1,8 +1,10 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { JwtPayload } from 'src/user/customTypes';
 import { GetJwtPayload } from './getUser.decorator';
+import { PaginationQueryDto } from './dto/PaginationQuery.dto';
+import { query } from 'express';
 
 @Controller('user')
 export class UserController {
@@ -16,7 +18,7 @@ export class UserController {
 
   @UseGuards(AuthGuard)
   @Get()
-  getUsers() {
-    return this.userService.getUsers();
+  getUsers(@Query() query: PaginationQueryDto) {
+    return this.userService.getUsers(query);
   }
 }

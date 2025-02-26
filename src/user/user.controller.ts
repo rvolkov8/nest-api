@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Patch, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Patch,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { JwtPayload } from 'src/user/customTypes';
@@ -22,7 +30,10 @@ export class UserController {
   }
 
   @Patch()
-  updateUser(@Body() body: userUpdateDto) {
-    return this.userService.updateUser(body);
+  updateUser(
+    @GetJwtPayload() jwtPayload: JwtPayload,
+    @Body() body: userUpdateDto,
+  ) {
+    return this.userService.updateUser(jwtPayload.sub, body);
   }
 }

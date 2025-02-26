@@ -11,11 +11,6 @@ import {
 } from 'class-validator';
 
 export class userUpdateDto {
-  @IsString()
-  @MinLength(4)
-  @MaxLength(10)
-  username: string;
-
   @IsEmail()
   @IsOptional()
   email: string;

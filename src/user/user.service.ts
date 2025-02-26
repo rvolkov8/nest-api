@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { userInfoDto } from 'src/auth/dto/userInfo.dto';
 import { User } from 'src/auth/user.entity';
@@ -35,12 +39,12 @@ export class UserService {
     return this.paginate(options);
   }
 
-  async updateUser(body: userUpdateDto) {
-    const { username, email, password, age, description } = body;
+  async updateUser(id: string, body: userUpdateDto) {
+    const { email, password, age, description } = body;
 
-    const user = await this.findOne([{ username }]);
+    const user = await this.findOne([{ id }]);
     if (!user) {
-      throw new BadRequestException('User with such username does not exist');
+      throw new InternalServerErrorException();
     }
 
     if (email) {

@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Patch,
   Query,
   UseGuards,
@@ -35,5 +36,11 @@ export class UserController {
     @Body() body: userUpdateDto,
   ) {
     return this.userService.updateUser(jwtPayload.sub, body);
+  }
+
+  @Delete()
+  @HttpCode(204)
+  deleteUser(@GetJwtPayload() jwtPayload: JwtPayload) {
+    return this.userService.deleteUser(jwtPayload.sub);
   }
 }

@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { userInfoDto } from 'src/auth/dto/userInfo.dto';
@@ -44,7 +45,7 @@ export class UserService {
 
     const user = await this.findOne([{ id }]);
     if (!user) {
-      throw new InternalServerErrorException();
+      throw new NotFoundException('User not found');
     }
 
     if (email) {
@@ -62,9 +63,15 @@ export class UserService {
       user.description = description;
     }
 
-    await this.userRepository.save(user);
+    return this.userRepository.save(user);
+  }
 
-    return user;
+  async deleteUser(id: string) {
+    const result = await this.userRepository.delete(id);
+
+    if (result.affected === 0) {
+      throw new NotFoundException();
+    }
   }
 
   private async paginate(

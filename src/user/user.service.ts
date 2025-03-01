@@ -8,7 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { userInfoDto } from 'src/auth/dto/userInfo.dto';
 import { User } from 'src/auth/user.entity';
 import { Repository } from 'typeorm';
-import { PaginationQueryDto } from './dto/paginationQuery.dto';
+import { paginationQueryDto } from './dto/paginationQuery.dto';
 import { userUpdateDto } from './dto/userUpdate.dto';
 import * as bcrypt from 'bcrypt';
 
@@ -36,7 +36,7 @@ export class UserService {
     return user;
   }
 
-  getUsers(options: PaginationQueryDto) {
+  getUsers(options: paginationQueryDto) {
     return this.paginate(options);
   }
 
@@ -75,7 +75,7 @@ export class UserService {
   }
 
   private async paginate(
-    options: PaginationQueryDto,
+    options: paginationQueryDto,
   ): Promise<{ items: User[]; total: number }> {
     const { page, limit } = options;
     const skip = (page - 1) * limit;

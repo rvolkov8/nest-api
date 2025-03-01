@@ -12,7 +12,7 @@ import { UserService } from './user.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { JwtPayload } from 'src/user/customTypes';
 import { GetJwtPayload } from './getUser.decorator';
-import { PaginationQueryDto } from './dto/paginationQuery.dto';
+import { paginationQueryDto } from './dto/paginationQuery.dto';
 import { userUpdateDto } from './dto/userUpdate.dto';
 import {
   ApiBadRequestResponse,
@@ -42,7 +42,7 @@ export class UserController {
   @ApiUnauthorizedResponse()
   @ApiBadRequestResponse()
   @Get()
-  getUsers(@Query() query: PaginationQueryDto) {
+  getUsers(@Query() query: paginationQueryDto) {
     return this.userService.getUsers(query);
   }
 

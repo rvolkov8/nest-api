@@ -8,7 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { userInfoDto } from 'src/auth/dto/userInfo.dto';
 import { User } from 'src/auth/user.entity';
 import { Repository } from 'typeorm';
-import { PaginationQueryDto } from './dto/PaginationQuery.dto';
+import { PaginationQueryDto } from './dto/paginationQuery.dto';
 import { userUpdateDto } from './dto/userUpdate.dto';
 import * as bcrypt from 'bcrypt';
 

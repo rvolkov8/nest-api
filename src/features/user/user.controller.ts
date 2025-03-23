@@ -55,7 +55,7 @@ export class UserController {
     @getJwtPayload() jwtPayload: JwtPayload,
     @Body() body: UserUpdateDto,
   ) {
-    return this.userService.updateUser(jwtPayload.sub, body);
+    return this.userService.update(jwtPayload.sub, body);
   }
 
   @ApiOperation({ summary: 'Used to delete the current user' })
@@ -65,6 +65,6 @@ export class UserController {
   @Delete()
   @HttpCode(204)
   deleteUser(@getJwtPayload() jwtPayload: JwtPayload) {
-    return this.userService.deleteUser(jwtPayload.sub);
+    return this.userService.delete(jwtPayload.sub);
   }
 }

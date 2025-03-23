@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { UserInfoDto } from './dto/user-info.dto';
@@ -8,6 +9,7 @@ import { SignInCredentialsDto } from './dto/sign-in-credentials.dto';
 import { UserService } from 'src/features/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { comparePasswords, hashPassword } from 'src/common/utils/helpers';
+import internal from 'stream';
 
 @Injectable()
 export class AuthService {
@@ -19,9 +21,27 @@ export class AuthService {
   async signUp(userInfoDto: UserInfoDto) {
     const { username, email } = userInfoDto;
 
-    const user = await this.userService.findOne([{ username }, { email }]);
+    const user = await this.userService.findOne(
+      [{ username }, { email }],
+      true,
+    );
 
     if (user) {
+      if (user.deletedAt) {
+        await this.userService.restore(user.id);
+
+        const restoredUser = await this.userService.findOne([{ id: user.id }]);
+        if (!restoredUser) {
+          throw new InternalServerErrorException(
+            'Failed to restore user. Please try again.',
+          );
+        }
+
+        restoredUser.password = await hashPassword(userInfoDto.password);
+
+        return this.userService.save(restoredUser);
+      }
+
       throw new ConflictException(
         `User with such ${user.username === username ? 'username' : 'email'} already exists.`,
       );

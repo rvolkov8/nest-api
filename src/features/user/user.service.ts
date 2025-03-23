@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,12 +18,22 @@ export class UserService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  findOne(options: object[]) {
-    return this.userRepository.findOne({ where: options });
+  findOne(options: object[], withDeleted = false) {
+    return this.userRepository.findOne({ where: options, withDeleted });
   }
 
   save(userInfoDto: UserInfoDto) {
     return this.userRepository.save(userInfoDto);
+  }
+
+  async restore(id: number) {
+    const restoreResult = await this.userRepository.restore(id);
+
+    if (restoreResult.affected === 0) {
+      throw new InternalServerErrorException(
+        'Failed to restore user. Please try again.',
+      );
+    }
   }
 
   getUser(id: string) {
@@ -39,7 +50,7 @@ export class UserService {
     return this.paginate(options);
   }
 
-  async updateUser(id: string, body: UserUpdateDto) {
+  async update(id: string, body: UserUpdateDto) {
     const { email, password, age, description } = body;
 
     const user = await this.findOne([{ id }]);
@@ -63,8 +74,8 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
-  async deleteUser(id: string) {
-    const result = await this.userRepository.delete(id);
+  async delete(id: string) {
+    const result = await this.userRepository.softDelete(id);
 
     if (result.affected === 0) {
       throw new NotFoundException();

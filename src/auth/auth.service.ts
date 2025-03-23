@@ -3,8 +3,8 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { userInfoDto } from './dto/userInfo.dto';
-import { SignInCredentialsDto } from './dto/signInCredentials.dto';
+import { userInfoDto } from './dto/user-info.dto';
+import { SignInCredentialsDto } from './dto/sign-in-credentials.dto';
 import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';

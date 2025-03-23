@@ -11,9 +11,9 @@ import {
 import { UserService } from './user.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { JwtPayload } from 'src/user/customTypes';
-import { GetJwtPayload } from './getUser.decorator';
-import { paginationQueryDto } from './dto/paginationQuery.dto';
-import { userUpdateDto } from './dto/userUpdate.dto';
+import { getJwtPayload } from './get-jwt-payload.decorator';
+import { paginationQueryDto } from './dto/pagination-query.dto';
+import { userUpdateDto } from './dto/user-update.dto';
 import {
   ApiBadRequestResponse,
   ApiNoContentResponse,
@@ -33,7 +33,7 @@ export class UserController {
   @ApiUnauthorizedResponse()
   @ApiBadRequestResponse()
   @Get('me')
-  getUser(@GetJwtPayload() jwtPayload: JwtPayload) {
+  getUser(@getJwtPayload() jwtPayload: JwtPayload) {
     return this.userService.getUser(jwtPayload.sub);
   }
 
@@ -52,7 +52,7 @@ export class UserController {
   @ApiBadRequestResponse()
   @Patch()
   updateUser(
-    @GetJwtPayload() jwtPayload: JwtPayload,
+    @getJwtPayload() jwtPayload: JwtPayload,
     @Body() body: userUpdateDto,
   ) {
     return this.userService.updateUser(jwtPayload.sub, body);
@@ -64,7 +64,7 @@ export class UserController {
   @ApiNotFoundResponse()
   @Delete()
   @HttpCode(204)
-  deleteUser(@GetJwtPayload() jwtPayload: JwtPayload) {
+  deleteUser(@getJwtPayload() jwtPayload: JwtPayload) {
     return this.userService.deleteUser(jwtPayload.sub);
   }
 }

@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { userInfoDto } from './dto/userInfo.dto';
+import { userInfoDto } from './dto/user-info.dto';
 import { AuthService } from './auth.service';
-import { SignInCredentialsDto } from './dto/signInCredentials.dto';
+import { SignInCredentialsDto } from './dto/sign-in-credentials.dto';
 import {
   ApiAcceptedResponse,
   ApiBadRequestResponse,

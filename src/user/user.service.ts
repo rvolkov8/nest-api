@@ -5,11 +5,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { userInfoDto } from 'src/auth/dto/userInfo.dto';
+import { userInfoDto } from 'src/auth/dto/user-info.dto';
 import { User } from 'src/auth/user.entity';
 import { Repository } from 'typeorm';
-import { paginationQueryDto } from './dto/paginationQuery.dto';
-import { userUpdateDto } from './dto/userUpdate.dto';
+import { paginationQueryDto } from './dto/pagination-query.dto';
+import { userUpdateDto } from './dto/user-update.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()

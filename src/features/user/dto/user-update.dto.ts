@@ -11,7 +11,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class userUpdateDto {
+export class UserUpdateDto {
   @IsEmail()
   @IsOptional()
   @ApiProperty({ required: false, example: 'email@gmail.com' })

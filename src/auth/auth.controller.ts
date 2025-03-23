@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { userInfoDto } from './dto/user-info.dto';
+import { UserInfoDto } from './dto/user-info.dto';
 import { AuthService } from './auth.service';
 import { SignInCredentialsDto } from './dto/sign-in-credentials.dto';
 import {
@@ -21,7 +21,7 @@ export class AuthController {
   @ApiBadRequestResponse()
   @ApiResponse({ status: 409 })
   @Post('signup')
-  signUp(@Body() signUpCredentialsDto: userInfoDto) {
+  signUp(@Body() signUpCredentialsDto: UserInfoDto) {
     return this.authService.signUp(signUpCredentialsDto);
   }
 

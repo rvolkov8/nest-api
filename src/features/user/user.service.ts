@@ -1,15 +1,14 @@
 import {
   BadRequestException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { userInfoDto } from 'src/auth/dto/user-info.dto';
-import { User } from 'src/auth/user.entity';
+import { UserInfoDto } from 'src/auth/dto/user-info.dto';
+import { User } from 'src/features/user/entity/user.entity';
 import { Repository } from 'typeorm';
-import { paginationQueryDto } from './dto/pagination-query.dto';
-import { userUpdateDto } from './dto/user-update.dto';
+import { PaginationQueryDto } from './dto/pagination-query.dto';
+import { UserUpdateDto } from './dto/user-update.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -22,7 +21,7 @@ export class UserService {
     return this.userRepository.findOne({ where: options });
   }
 
-  save(userInfoDto: userInfoDto) {
+  save(userInfoDto: UserInfoDto) {
     return this.userRepository.save(userInfoDto);
   }
 
@@ -36,11 +35,11 @@ export class UserService {
     return user;
   }
 
-  getUsers(options: paginationQueryDto) {
+  getUsers(options: PaginationQueryDto) {
     return this.paginate(options);
   }
 
-  async updateUser(id: string, body: userUpdateDto) {
+  async updateUser(id: string, body: UserUpdateDto) {
     const { email, password, age, description } = body;
 
     const user = await this.findOne([{ id }]);
@@ -75,7 +74,7 @@ export class UserService {
   }
 
   private async paginate(
-    options: paginationQueryDto,
+    options: PaginationQueryDto,
   ): Promise<{ items: User[]; total: number }> {
     const { page, limit } = options;
     const skip = (page - 1) * limit;

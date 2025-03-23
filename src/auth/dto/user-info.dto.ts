@@ -10,7 +10,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class userInfoDto {
+export class UserInfoDto {
   @IsString()
   @MinLength(4)
   @MaxLength(10)

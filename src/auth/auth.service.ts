@@ -3,9 +3,9 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { userInfoDto } from './dto/user-info.dto';
+import { UserInfoDto } from './dto/user-info.dto';
 import { SignInCredentialsDto } from './dto/sign-in-credentials.dto';
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/features/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
@@ -16,7 +16,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signUp(userInfoDto: userInfoDto) {
+  async signUp(userInfoDto: UserInfoDto) {
     const { username, email } = userInfoDto;
 
     const user = await this.userService.findOne([{ username }, { email }]);

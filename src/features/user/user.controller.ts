@@ -10,10 +10,10 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { JwtPayload } from 'src/user/customTypes';
-import { getJwtPayload } from './get-jwt-payload.decorator';
-import { paginationQueryDto } from './dto/pagination-query.dto';
-import { userUpdateDto } from './dto/user-update.dto';
+import { JwtPayload } from 'src/common/interfaces/custom-types';
+import { getJwtPayload } from '../../common/decorators/get-jwt-payload.decorator';
+import { PaginationQueryDto } from './dto/pagination-query.dto';
+import { UserUpdateDto } from './dto/user-update.dto';
 import {
   ApiBadRequestResponse,
   ApiNoContentResponse,
@@ -42,7 +42,7 @@ export class UserController {
   @ApiUnauthorizedResponse()
   @ApiBadRequestResponse()
   @Get()
-  getUsers(@Query() query: paginationQueryDto) {
+  getUsers(@Query() query: PaginationQueryDto) {
     return this.userService.getUsers(query);
   }
 
@@ -53,7 +53,7 @@ export class UserController {
   @Patch()
   updateUser(
     @getJwtPayload() jwtPayload: JwtPayload,
-    @Body() body: userUpdateDto,
+    @Body() body: UserUpdateDto,
   ) {
     return this.userService.updateUser(jwtPayload.sub, body);
   }

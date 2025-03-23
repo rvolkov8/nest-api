@@ -36,8 +36,8 @@ export class UserService {
     }
   }
 
-  getUser(id: string) {
-    const user = this.findOne([{ id }]);
+  async getUser(id: string) {
+    const user = await this.findOne([{ id }]);
 
     if (!user) {
       throw new BadRequestException();

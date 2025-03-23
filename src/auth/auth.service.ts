@@ -1,7 +1,6 @@
 import {
   ConflictException,
   Injectable,
-  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { UserInfoDto } from './dto/user-info.dto';
@@ -9,7 +8,6 @@ import { SignInCredentialsDto } from './dto/sign-in-credentials.dto';
 import { UserService } from 'src/features/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { comparePasswords, hashPassword } from 'src/common/utils/helpers';
-import internal from 'stream';
 
 @Injectable()
 export class AuthService {
@@ -28,18 +26,14 @@ export class AuthService {
 
     if (user) {
       if (user.deletedAt) {
-        await this.userService.restore(user.id);
+        const userId = String(user.id);
 
-        const restoredUser = await this.userService.findOne([{ id: user.id }]);
-        if (!restoredUser) {
-          throw new InternalServerErrorException(
-            'Failed to restore user. Please try again.',
-          );
-        }
+        await this.userService.restore(userId);
 
-        restoredUser.password = await hashPassword(userInfoDto.password);
-
-        return this.userService.save(restoredUser);
+        return this.userService.update(userId, {
+          ...user,
+          password: userInfoDto.password,
+        });
       }
 
       throw new ConflictException(

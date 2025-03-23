@@ -26,7 +26,7 @@ export class UserService {
     return this.userRepository.save(userInfoDto);
   }
 
-  async restore(id: number) {
+  async restore(id: string) {
     const restoreResult = await this.userRepository.restore(id);
 
     if (restoreResult.affected === 0) {
@@ -71,7 +71,9 @@ export class UserService {
       user.description = description;
     }
 
-    return this.userRepository.save(user);
+    await this.userRepository.update(id, user);
+
+    return user;
   }
 
   async delete(id: string) {

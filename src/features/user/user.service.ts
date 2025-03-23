@@ -9,7 +9,7 @@ import { User } from 'src/features/user/entity/user.entity';
 import { Repository } from 'typeorm';
 import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { UserUpdateDto } from './dto/user-update.dto';
-import * as bcrypt from 'bcrypt';
+import { hashPassword } from 'src/common/utils/helpers';
 
 @Injectable()
 export class UserService {
@@ -51,9 +51,7 @@ export class UserService {
       user.email = email;
     }
     if (password) {
-      const salt = await bcrypt.genSalt();
-      const hashedPassword = await bcrypt.hash(password, salt);
-      user.password = hashedPassword;
+      user.password = await hashPassword(password);
     }
     if (age) {
       user.age = age;

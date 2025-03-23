@@ -7,7 +7,7 @@ import { UserInfoDto } from './dto/user-info.dto';
 import { SignInCredentialsDto } from './dto/sign-in-credentials.dto';
 import { UserService } from 'src/features/user/user.service';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
+import { comparePasswords, hashPassword } from 'src/common/utils/helpers';
 
 @Injectable()
 export class AuthService {
@@ -27,8 +27,7 @@ export class AuthService {
       );
     }
 
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(userInfoDto.password, salt);
+    const hashedPassword = await hashPassword(userInfoDto.password);
 
     return this.userService.save({ ...userInfoDto, password: hashedPassword });
   }
@@ -43,7 +42,7 @@ export class AuthService {
         'User with such username does not exist.',
       );
     } else {
-      const isMatch = await bcrypt.compare(password, user.password);
+      const isMatch = await comparePasswords(password, user.password);
       if (!isMatch) {
         throw new UnauthorizedException('Wrong password.');
       }

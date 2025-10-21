@@ -3,8 +3,8 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/features/user/entity/user.entity';
-import { UserService } from 'src/features/user/user.service';
 import { JwtModule } from '@nestjs/jwt';
+import { UserModule } from 'src/features/user/user.module';
 
 @Module({
   imports: [
@@ -16,8 +16,9 @@ import { JwtModule } from '@nestjs/jwt';
         expiresIn: '24h',
       },
     }),
+    UserModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, UserService],
+  providers: [AuthService],
 })
 export class AuthModule {}

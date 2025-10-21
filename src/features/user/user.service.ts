@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -12,14 +11,13 @@ import { Repository } from 'typeorm';
 import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { UserUpdateDto } from './dto/user-update.dto';
 import { hashPassword } from 'src/common/utils/helpers';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
+import { CacheService } from 'src/common/modules/cache/cache.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private readonly cacheService: CacheService,
   ) {}
 
   findOne(options: object[], withDeleted = false) {
@@ -54,7 +52,7 @@ export class UserService {
     const key = `users|page:${options.page}|limit:${options.limit}`;
 
     try {
-      const cached = await this.cacheManager.get(key);
+      const cached = await this.cacheService.get(key);
       if (cached) {
         return cached;
       }
@@ -65,7 +63,7 @@ export class UserService {
     const users = await this.paginate(options);
 
     try {
-      await this.cacheManager.set(key, users, 30_000);
+      await this.cacheService.set(key, users, 30_000);
       throw new Error('');
     } catch (error) {
       console.warn(`Cache SET failed for key "${key}": `, error.message);

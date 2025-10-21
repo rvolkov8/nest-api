@@ -3,6 +3,8 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './features/user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CacheModule } from '@nestjs/cache-manager';
+import { createKeyv } from '@keyv/redis';
 
 @Module({
   imports: [
@@ -22,6 +24,20 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         autoLoadEntities: true,
         synchronize: true,
       }),
+    }),
+    CacheModule.registerAsync({
+      isGlobal: true,
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const host = configService.get<string>('REDIS_HOST');
+        const port = configService.get<number>('REDIS_PORT');
+        const password = configService.get<string>('REDIS_PASSWORD');
+
+        return {
+          stores: [createKeyv(`redis://:${password}@${host}:${port}`)],
+        };
+      },
     }),
     AuthModule,
     UserModule,

@@ -151,7 +151,7 @@ export function addSwaggerDocs(document: OpenAPIObject) {
       400: {
         description: 'Bad request (e.g. same user or insufficient funds)',
       },
-      401: { description: 'Unauthorized – invalid token' },
+      401: { description: 'Unauthorized - invalid token' },
       404: { description: 'Sender or receiver not found' },
     };
   }

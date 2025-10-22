@@ -1,4 +1,6 @@
+import { Min } from 'class-validator';
 import {
+  Check,
   Column,
   DeleteDateColumn,
   Entity,
@@ -6,6 +8,7 @@ import {
 } from 'typeorm';
 
 @Entity()
+@Check(`"balance" >= 0`)
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -29,6 +32,15 @@ export class User {
 
   @Column({ length: 1000 })
   description: string;
+
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    default: 0,
+  })
+  @Min(0, { message: 'Balance cannot be negative' })
+  balance: number;
 
   @DeleteDateColumn()
   deletedAt?: Date;

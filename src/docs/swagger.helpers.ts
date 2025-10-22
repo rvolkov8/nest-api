@@ -47,6 +47,15 @@ export function addSwaggerDocs(document: OpenAPIObject) {
     required: [],
   };
 
+  document.components.schemas.BalanceTransferDto = {
+    type: 'object',
+    properties: {
+      receiverUsername: { type: 'string', minLength: 4, maxLength: 10 },
+      amount: { type: 'number', minimum: 0.01, multipleOf: 0.01 },
+    },
+    required: ['receiverUsername', 'amount'],
+  };
+
   // === Endpoint Metadata ===
   const paths = document.paths;
 
@@ -124,6 +133,26 @@ export function addSwaggerDocs(document: OpenAPIObject) {
       204: { description: 'User successfully deleted' },
       401: { description: 'Unauthorized – invalid token' },
       404: { description: 'User not found' },
+    };
+  }
+
+  if (paths['/user/transfer']?.patch) {
+    paths['/user/transfer'].patch.summary =
+      'Used to transfer balance to another user by username';
+    paths['/user/transfer'].patch.requestBody = {
+      content: {
+        'application/json': {
+          schema: { $ref: '#/components/schemas/BalanceTransferDto' },
+        },
+      },
+    };
+    paths['/user/transfer'].patch.responses = {
+      204: { description: 'Balance successfully transferred' },
+      400: {
+        description: 'Bad request (e.g. same user or insufficient funds)',
+      },
+      401: { description: 'Unauthorized – invalid token' },
+      404: { description: 'Sender or receiver not found' },
     };
   }
 }

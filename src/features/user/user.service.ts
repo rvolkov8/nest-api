@@ -12,6 +12,7 @@ import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { UserUpdateDto } from './dto/user-update.dto';
 import { hashPassword } from 'src/common/utils/helpers';
 import { CacheService } from 'src/common/modules/cache/cache.service';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class UserService {
@@ -64,7 +65,6 @@ export class UserService {
 
     try {
       await this.cacheService.set(key, users, 30_000);
-      throw new Error('');
     } catch (error) {
       console.warn(`Cache SET failed for key "${key}": `, error.message);
     }
@@ -118,5 +118,56 @@ export class UserService {
     });
 
     return { items, total };
+  }
+
+  @Transactional()
+  async transferToUsername(
+    senderUsername: string,
+    receiverUsername: string,
+    amount: number,
+  ) {
+    if (senderUsername === receiverUsername) {
+      throw new BadRequestException('Cannot transfer to the same user');
+    }
+
+    if (amount <= 0) {
+      throw new BadRequestException('Transfer amount must be greater than 0');
+    }
+
+    const username = [senderUsername, receiverUsername].sort();
+
+    const senderUser = await this.userRepository.findOne({
+      where: { username: username[0] },
+      lock: { mode: 'pessimistic_write' },
+    });
+
+    if (!senderUser) {
+      throw new NotFoundException(
+        `Sender with username ${username[0]} not found.`,
+      );
+    }
+
+    const receiverUser = await this.userRepository.findOne({
+      where: { username: username[1] },
+      lock: { mode: 'pessimistic_write' },
+    });
+
+    if (!receiverUser) {
+      throw new NotFoundException(
+        `Receiver with username ${username[1]} not found.`,
+      );
+    }
+
+    const fromBalance = Number(senderUser.balance);
+    const toBalance = Number(receiverUser.balance);
+
+    if (fromBalance < amount) {
+      throw new BadRequestException('Insufficient funds');
+    }
+
+    senderUser.balance = fromBalance - amount;
+    receiverUser.balance = toBalance + amount;
+
+    await this.userRepository.save([senderUser, receiverUser]);
   }
 }

@@ -14,6 +14,7 @@ import { JwtPayload } from 'src/common/interfaces/custom-types';
 import { getJwtPayload } from '../../common/decorators/get-jwt-payload.decorator';
 import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { UserUpdateDto } from './dto/user-update.dto';
+import { BalanceTransferDto } from './dto/balance-transfer.dto';
 
 @UseGuards(AuthGuard)
 @Controller('user')
@@ -42,5 +43,18 @@ export class UserController {
   @HttpCode(204)
   deleteUser(@getJwtPayload() jwtPayload: JwtPayload) {
     return this.userService.delete(jwtPayload.sub);
+  }
+
+  @Patch('transfer')
+  @HttpCode(204)
+  transferToUsername(
+    @getJwtPayload() jwtPayload: JwtPayload,
+    @Body() body: BalanceTransferDto,
+  ) {
+    return this.userService.transferToUsername(
+      jwtPayload.username,
+      body.receiverUsername,
+      body.amount,
+    );
   }
 }
